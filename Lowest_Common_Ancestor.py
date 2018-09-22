@@ -16,7 +16,7 @@ class Node:
 # Finds the LCA of two nodes in a Binary Tree
 
 # BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
-# Methods: isEmpty(self), add(self, val), LCA(self, Node, Node)
+# Methods: isEmpty(self), add(self, val), LCA(self, node_1, node_2)
 # Attributes: root, size
 
 class BinaryTree:
