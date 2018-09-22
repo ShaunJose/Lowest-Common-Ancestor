@@ -32,6 +32,8 @@ class BinaryTree:
 
 
     # adds a node in the Binary Tree
+    # NOTE: adds nodes in binary search tree order i.e. nodes with lower values to the left and node with larger values to the right
+    # doesn't add duplicate nodes (2 nodes with same values don't exist)
     def add(self, val):
 
 
