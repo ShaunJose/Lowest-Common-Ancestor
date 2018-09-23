@@ -2,7 +2,7 @@
 # Date created: 22/09/2018
 
 # Node class
-# Attributes: left, right, data
+# Attributes: left, right, data, parent
 # NOTE: data can be int, float, double, or char type
 
 class Node:
@@ -11,6 +11,7 @@ class Node:
         self.left = None
         self.right = None
         self.data = data
+        self.parent = None
 
 # Lowest Common Ancestor class
 # Finds the LCA of two nodes in a Binary Tree
@@ -35,6 +36,7 @@ class BinaryTree:
 
 
     # NOTE: adds nodes in binary search tree order i.e. nodes with lower values to the left and node with larger values to the right
+    # NOTE: Also keeps record of parent node
     def add(self, val):
         """
         Adds a node to the Binary Tree
