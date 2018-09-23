@@ -23,19 +23,40 @@ class BinaryTree:
 
     # Initializes an Empty Binary Tree
     def __init__(self):
-        self.root = None
-        self.size = 0
+        self._root = None #'_' implies root should not be accesses from outside
+        self._size = 0
 
 
-    # returns True if Tree is Empty, False otherwise
-    def isEmpty(self):
+    # '_' to imply that function should not be accessed from outside
+    def _isEmpty(self):
+        """
+        Returns True if Tree is Empty, and False otherwise
+        """
 
 
-    # adds a node in the Binary Tree
     # NOTE: adds nodes in binary search tree order i.e. nodes with lower values to the left and node with larger values to the right
-    # doesn't add duplicate nodes (2 nodes with same values don't exist)
     def add(self, val):
+        """
+        Adds a node to the Binary Tree
+        Doesn't add duplicate nodes (Nodes with duplicate values)
+        """
 
-
-    # finds the lowest common ancestor of two nodes, (inclusive of the nodes themselves)
+    # NOTE: LCA is not found in two cases :
+    # 1. when either node is null.
+    # 1. when node1 and node2 are in different trees
+    # Null value returned when LCA not found
     def LCA(self, node_1, node_2):
+        """
+        Finds the lowest common ancestor of two nodes, (inclusive of the nodes themselves), and returns the node
+        Returns null if LCA not found
+        """
+
+        #empty tree case (self.root == null)
+
+        #node1 == null || node2 == null
+
+        #node1 == node2
+
+        #normal case
+
+        #return null when not found
