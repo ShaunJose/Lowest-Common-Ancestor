@@ -1,12 +1,17 @@
-# Tester of the BinaryTree class, (focus on LCA implementation)
+# Exhaustive Tester of the Lowest_Common_Ancestor class, (focus on LCA method implementation)
 
 # Pytest framework used
 
-# Test outcome of LCA for an empty binary tree
+# Test outcome of LCA for an empty binary tree with None(null) Nodes
 def test_empty_tree():
 
 
-# Test outcome of LCA for None node/s
+# Test outcome of LCA for an empty tree with nodes that exist
+#def test_empty_tree_with_existing_nodes():
+# NOTE: same outcome as previous method, so not needed
+
+
+# Test outcome of LCA for a populated binary tree with None(null) node/s passed
 def test_None_nodes():
     #pass both node1 == node2 == None
 
