@@ -7,11 +7,11 @@
 
 class Node:
 
-    def __init__(self, data):
+    def __init__(self, data, parent):
         self.left = None
         self.right = None
         self.data = data
-        self.parent = None
+        self.parent = parent
 
 # Lowest Common Ancestor class
 # Finds the LCA of two nodes in a Binary Tree
