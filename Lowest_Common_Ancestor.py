@@ -1,6 +1,9 @@
 # author : Shaun Jose
 # Date created: 22/09/2018
 
+# Lowest Common Ancestor class
+# Finds the LCA of two nodes in a Binary Tree
+
 # Node class
 # Attributes: left, right, data, parent
 # NOTE: data can be int, float, double, or char type
@@ -12,9 +15,6 @@ class Node:
         self.right = None
         self.data = data
         self.parent = parent
-
-# Lowest Common Ancestor class
-# Finds the LCA of two nodes in a Binary Tree
 
 # BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
 # Methods: _isEmpty(self), add(self, val), get(self, val), LCA(self, node_1, node_2)
