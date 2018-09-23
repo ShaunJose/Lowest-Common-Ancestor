@@ -16,7 +16,7 @@ class Node:
 # Finds the LCA of two nodes in a Binary Tree
 
 # BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
-# Methods: isEmpty(self), add(self, val), LCA(self, node_1, node_2)
+# Methods: _isEmpty(self), add(self, val), get(self, val), LCA(self, node_1, node_2)
 # Attributes: root, size
 
 class BinaryTree:
@@ -41,22 +41,31 @@ class BinaryTree:
         Doesn't add duplicate nodes (Nodes with duplicate values)
         """
 
+
+    # Returns node with value val, if found, else None
+    def get(self, val):
+        """
+        Accepts a value and returns the node with that corresponding value
+        Returns None if node not found
+        """
+
+
     # NOTE: LCA is not found in two cases :
-    # 1. when either node is null.
+    # 1. when either node is None.
     # 1. when node1 and node2 are in different trees
-    # Null value returned when LCA not found
+    # None value returned when LCA not found
     def LCA(self, node_1, node_2):
         """
         Finds the lowest common ancestor of two nodes, (inclusive of the nodes themselves), and returns the node
-        Returns null if LCA not found
+        Returns None if LCA not found
         """
 
-        #empty tree case (self.root == null)
+        #empty tree case (self.root == None)
 
-        #node1 == null || node2 == null
+        #node1 == None || node2 == None
 
         #node1 == node2
 
         #normal case
 
-        #return null when not found
+        #return None when not found

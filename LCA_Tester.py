@@ -6,11 +6,11 @@
 def test_empty_tree():
 
 
-# Test outcome of LCA for null node/s
-def test_null_nodes():
-    #pass both node1 == node2 == null
+# Test outcome of LCA for None node/s
+def test_None_nodes():
+    #pass both node1 == node2 == None
 
-    #pass node2 == null
+    #pass node2 == None
 
     #pass get(val) such that val not in tree
 
