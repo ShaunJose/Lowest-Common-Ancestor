@@ -52,9 +52,10 @@ class BinaryTree:
         """
 
 
-    # NOTE: LCA is not found in two cases :
-    # 1. when either node is None.
-    # 1. when node1 and node2 are in different trees
+    # NOTE: LCA is not found in three cases :
+    # 1. When tree used to call method is empty
+    # 2. when either node is None.
+    # 3. when node1 and node2 are in different trees
     # None value returned when LCA not found
     def LCA(self, node_1, node_2):
         """
