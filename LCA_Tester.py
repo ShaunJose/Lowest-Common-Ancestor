@@ -38,3 +38,7 @@ def test_populated_tree():
 
 # Test case where node1 and node2 are in different trees
 def test_different_tree_nodes():
+
+
+#Test case for all the add and get cases which weren't covered above, so as to achieve maximm code-coverage
+def remaining_add_get_cases():
