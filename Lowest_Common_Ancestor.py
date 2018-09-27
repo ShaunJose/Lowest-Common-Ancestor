@@ -17,7 +17,7 @@ class Node:
         self.parent = parent
 
 # BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
-# Methods: _isEmpty(self), add(self, val), get(self, val), LCA(self, node_1, node_2)
+# Methods: _isEmpty(self), add(self, val), get(self, val), (static) LCA(node_1, node_2)
 # Attributes: root, size
 
 class BinaryTree:
@@ -52,18 +52,16 @@ class BinaryTree:
         """
 
 
-    # NOTE: LCA is not found in three cases :
-    # 1. When tree used to call method is empty
-    # 2. when either node is None.
-    # 3. when node1 and node2 are in different trees
+    # NOTE: LCA is not found in two cases :
+    # 1. when either node is None.
+    # 2. when node1 and node2 are in different trees
     # None value returned when LCA not found
-    def LCA(self, node_1, node_2):
+    @staticmethod
+    def LCA(node_1, node_2):
         """
         Finds the lowest common ancestor of two nodes, (inclusive of the nodes themselves), and returns the node
         Returns None if LCA not found
         """
-
-        #empty tree case (self.root == None)
 
         #node1 == None || node2 == None
 
