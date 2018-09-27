@@ -22,6 +22,9 @@ def test_none_nodes():
     #passing node2 == None
     assert (BinaryTree.LCA(bt.get(7), None) == None)
 
+    #passing node1 == None (not really needed)
+    assert (BinaryTree.LCA(None, bt.get(7)) == None)
+
     #passing get(val) such that val not in tree
     #13 doesn't exist in tree
     assert (BinaryTree.LCA(bt.get(7), bt.get(13)) == None)
@@ -48,6 +51,10 @@ def test_same_nodes():
     #Check LCA of node 11 and itself
     node_11 = bt.get(11);
     assert (BinaryTree.LCA(node_11, node_11) == node_11)
+
+    #Check LCA of node 1 and itself
+    node_1 = bt.get(1);
+    assert (BinaryTree.LCA(node_1, node_1) == node_1)
 
 
 # LCA Test with only left children
@@ -78,11 +85,14 @@ def test_left_tree():
     #Check LCA of 12 and 30 (should be 25)
     assert (BinaryTree.LCA(bt.get(12), bt.get(30)) == bt.get(25))
 
+    #Check LCA of 60 and 80 (should be 75)
+    assert (BinaryTree.LCA(bt.get(60), bt.get(80)) == bt.get(75))
+
     #Check LCA of 50 and 60 (should be 50)
     assert (BinaryTree.LCA(bt.get(50), bt.get(60)) == bt.get(50))
 
     #Check LCA of 100 and 12 (should be 100)
-    assert (BinaryTree.LCA(bt.get(100), bt.get(12)) == bt.get(100))
+    assert (BinaryTree.LCA(bt.get(12), bt.get(100)) == bt.get(100))
 
 # LCA Test with only right children
 def test_right_tree():
@@ -136,22 +146,27 @@ def test_populated_tree():
     bt.add(126)         #           126 142
     bt.add(142)
 
-    #random exhaustive testing
+    #exhaustive testing
+
+    #nodes at same 'depth'
     assert (BinaryTree.LCA(bt.get(80), bt.get(10)) == bt.get(50))
-
-    assert (BinaryTree.LCA(bt.get(100), bt.get(10)) == bt.get(100))
-
-    assert (BinaryTree.LCA(bt.get(100), bt.get(126)) == bt.get(100))
-
-    assert (BinaryTree.LCA(bt.get(80), bt.get(10)) == bt.get(50))
-
     assert (BinaryTree.LCA(bt.get(126), bt.get(142)) == bt.get(127))
+    assert (BinaryTree.LCA(bt.get(10), bt.get(200)) == bt.get(100))
+    assert (BinaryTree.LCA(bt.get(50), bt.get(150)) == bt.get(100))
 
+    #node1 higher in the tree than node2
+    assert (BinaryTree.LCA(bt.get(100), bt.get(10)) == bt.get(100))
+    assert (BinaryTree.LCA(bt.get(100), bt.get(126)) == bt.get(100))
+    assert (BinaryTree.LCA(bt.get(10), bt.get(142)) == bt.get(100))
+    assert (BinaryTree.LCA(bt.get(125), bt.get(142)) == bt.get(125))
+    assert (BinaryTree.LCA(bt.get(75), bt.get(10)) == bt.get(50))
+
+    #node1 deeper than node2
     assert (BinaryTree.LCA(bt.get(200), bt.get(125)) == bt.get(150))
-
-    assert (BinaryTree.LCA(bt.get(142), bt.get(10)) == bt.get(100))
-
     assert (BinaryTree.LCA(bt.get(142), bt.get(180)) == bt.get(150))
+    assert (BinaryTree.LCA(bt.get(10), bt.get(75)) == bt.get(50))
+    assert (BinaryTree.LCA(bt.get(142), bt.get(80)) == bt.get(100))
+    assert (BinaryTree.LCA(bt.get(142), bt.get(125)) == bt.get(125))
 
 # Test case where node1 and node2 are in different trees
 def test_different_tree_nodes():
@@ -209,8 +224,9 @@ def remaining_add_get_cases():
     bt.add(5)
 
     #covering code for duplicate node value
-    bt.add(5) #shouldn't change the tree
+    bt.add(5) #shouldn't change the tree, duplicate value
 
-    #trying get with values that doesn't exist
+    #trying get for values that doesn't exist
+    #assert not used because done purely for code-coverage
     bt.get(1)
     bt.get(100)
