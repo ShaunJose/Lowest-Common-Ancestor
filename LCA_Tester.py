@@ -6,6 +6,37 @@ from Lowest_Common_Ancestor import BinaryTree, Node
 
 #test_empty_tree not applicable for LCA
 
+# Method for all the add and get cases which weren't covered above, so as to achieve maximm code-coverage
+# NOTE: No tests here! This is simply for code-coverage
+def remaining_add_get_cases():
+
+    bt = BinaryTree()
+    node1 = bt.add(7)
+    node2 = bt.add(10)
+    node3 = bt.add(5)
+    node4 = bt.add(11)
+    node5 = bt.add(9)
+    node6 = bt.add(4)
+    node7 = bt.add(6)
+
+    #covering code for duplicate node value
+    bt.add(5) #shouldn't change the tree, duplicate value
+
+    #trying get for all 7 node values
+    assert (bt.get(7) == node1)
+    assert (bt.get(10) == node2)
+    assert (bt.get(5) == node3)
+    assert (bt.get(11) == node4)
+    assert (bt.get(9) == node5)
+    assert (bt.get(4) == node6)
+    assert (bt.get(6) == node7)
+
+    #trying get for values that doesn't exist
+    #assert not used because done purely for code-coverage
+    assert (bt.get(1) == None)
+    assert (bt.get(100) == None)
+
+
 # Test outcome of LCA for a populated binary tree with None(null) node/s passed
 def test_none_nodes():
     #Creating and populating binary tree
@@ -94,6 +125,7 @@ def test_left_tree():
     #Check LCA of 100 and 12 (should be 100)
     assert (BinaryTree.LCA(bt.get(12), bt.get(100)) == bt.get(100))
 
+
 # LCA Test with only right children
 def test_right_tree():
     #Creating and populating "right" Binary tree
@@ -168,6 +200,7 @@ def test_populated_tree():
     assert (BinaryTree.LCA(bt.get(142), bt.get(80)) == bt.get(100))
     assert (BinaryTree.LCA(bt.get(142), bt.get(125)) == bt.get(125))
 
+
 # Test case where node1 and node2 are in different trees
 def test_different_tree_nodes():
     #Create bt1 and populate it
@@ -213,20 +246,3 @@ def test_different_tree_nodes():
 
     #test case with node1 from bt1 and node2 from bt2
     assert (BinaryTree.LCA(bt1.get(30), bt2.get(63)) == None)
-
-# Method for all the add and get cases which weren't covered above, so as to achieve maximm code-coverage
-# NOTE: No tests here! This is simply for code-coverage
-def remaining_add_get_cases():
-    bt = BinaryTree()
-
-    bt.add(7)
-    bt.add(10)
-    bt.add(5)
-
-    #covering code for duplicate node value
-    bt.add(5) #shouldn't change the tree, duplicate value
-
-    #trying get for values that doesn't exist
-    #assert not used because done purely for code-coverage
-    bt.get(1)
-    bt.get(100)

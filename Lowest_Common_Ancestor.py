@@ -17,39 +17,65 @@ class Node:
         self.parent = parent
 
 # BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
-# Methods: _isEmpty(self), add(self, val), get(self, val), (static) LCA(node_1, node_2)
-# Attributes: root, size
+# Methods: add(self, data), _add(self, data, node, parent), get(self, data), _get(self, data, node), (static) LCA(node_1, node_2)
+# Attributes: _root, size
 
 class BinaryTree:
 
     # Initializes an Empty Binary Tree
     def __init__(self):
-        self._root = None #'_' implies root should not be accesses from outside
+        self._root = None #'_' implies _root should not be accesses from outside
         self._size = 0
 
 
-    # '_' to imply that function should not be accessed from outside
-    def _isEmpty(self):
-        """
-        Returns True if Tree is Empty, and False otherwise
-        """
-
-
-    # NOTE: adds nodes in binary search tree order i.e. nodes with lower values to the left and node with larger values to the right
+    # NOTE: adds nodes in binary search tree order i.e. nodes with lower data values to the left and node with larger data values to the right
     # NOTE: Also keeps record of parent node
-    def add(self, val):
+    def add(self, data):
         """
         Adds a node to the Binary Tree
         Doesn't add duplicate nodes (Nodes with duplicate values)
         """
+        self._add(data, self._root, None)
+
+    # Recursive inner _add method
+    def _add(self, data, node, parent):
+
+        #Found a place to store the node
+        if(node == None):
+            node = Node(data, parent)
+            self._size += 1
+            return
+
+        #Traversing the tree to find an empty place for the new node
+        if(data < node.data):
+            self._add(data, node.left, node)
+        elif(data > node.data):
+            self._add(data, self.right, node)
+        else: #equals to case:
+            return #no duplicate data values accepted
 
 
-    # Returns node with value val, if found, else None
-    def get(self, val):
+    # Returns node with data, if found, else None
+    def get(self, data):
         """
         Accepts a value and returns the node with that corresponding value
         Returns None if node not found
         """
+        return self._get(data, self._root)
+
+    # Recursive get method
+    def _get(self, data, node):
+
+        if(node == None): #node doesn't exist
+            return None
+
+        if(data == node.data):
+            return node
+
+        if(data < node.data):
+            self._get(data, node.left)
+        else: #Node can only be greater than now as equal data values not      allowed
+            self._get(data, node.right)
 
 
     # NOTE: LCA is not found in two cases :
@@ -62,6 +88,8 @@ class BinaryTree:
         Finds the lowest common ancestor of two nodes, (inclusive of the nodes themselves), and returns the node
         Returns None if LCA not found
         """
+
+        return Node(5, None)
 
         #node1 == None || node2 == None
 
