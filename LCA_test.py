@@ -6,30 +6,30 @@ from Lowest_Common_Ancestor import BinaryTree, Node
 
 #test_empty_tree not applicable for LCA
 
-# Method for all the add and get cases which weren't covered above, so as to achieve maximm code-coverage
-# NOTE: No tests here! This is simply for code-coverage
-def remaining_add_get_cases():
+# Method for all the add and get cases which weren't covered above, so as to achieve maximum code-coverage
+# NOTE: This is simply for code-coverage
+def test_all_add_get_cases():
 
     bt = BinaryTree()
-    node1 = bt.add(7)
-    node2 = bt.add(10)
-    node3 = bt.add(5)
-    node4 = bt.add(11)
-    node5 = bt.add(9)
-    node6 = bt.add(4)
+    node1 = bt.add(7)       #       7
+    node2 = bt.add(10)      #     /   \
+    node3 = bt.add(5)       #    5     10
+    node4 = bt.add(11)      #   / \   / \
+    node5 = bt.add(9)       #  4  6  9  11
+    node6 = bt.add(4)       # should cover existing nodes cases
     node7 = bt.add(6)
 
     #covering code for duplicate node value
     bt.add(5) #shouldn't change the tree, duplicate value
 
     #trying get for all 7 node values
-    assert (bt.get(7) == node1)
-    assert (bt.get(10) == node2)
-    assert (bt.get(5) == node3)
-    assert (bt.get(11) == node4)
-    assert (bt.get(9) == node5)
-    assert (bt.get(4) == node6)
-    assert (bt.get(6) == node7)
+    assert (bt.get(7) == bt._root)
+    assert (bt.get(10) == bt._root.right)
+    assert (bt.get(5) == bt._root.left)
+    assert (bt.get(11) == bt._root.right.right)
+    assert (bt.get(9) == bt._root.right.left)
+    assert (bt.get(4) == bt._root.left.left)
+    assert (bt.get(6) == bt._root.left.right)
 
     #trying get for values that doesn't exist
     #assert not used because done purely for code-coverage

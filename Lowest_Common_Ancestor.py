@@ -35,7 +35,7 @@ class BinaryTree:
         Adds a node to the Binary Tree
         Doesn't add duplicate nodes (Nodes with duplicate values)
         """
-        self._add(data, self._root, None)
+        self._root = self._add(data, self._root, None)
 
     # Recursive inner _add method
     def _add(self, data, node, parent):
@@ -44,15 +44,16 @@ class BinaryTree:
         if(node == None):
             node = Node(data, parent)
             self._size += 1
-            return
+            return node
 
         #Traversing the tree to find an empty place for the new node
         if(data < node.data):
-            self._add(data, node.left, node)
+            node.left = self._add(data, node.left, node)
         elif(data > node.data):
-            self._add(data, self.right, node)
-        else: #equals to case:
-            return #no duplicate data values accepted
+            node.right = self._add(data, node.right, node)
+        #equals to case -> don't add duplicate node (i.e. do nothing)
+
+        return node
 
 
     # Returns node with data, if found, else None
@@ -73,9 +74,9 @@ class BinaryTree:
             return node
 
         if(data < node.data):
-            self._get(data, node.left)
+            return self._get(data, node.left)
         else: #Node can only be greater than now as equal data values not      allowed
-            self._get(data, node.right)
+            return self._get(data, node.right)
 
 
     # NOTE: LCA is not found in two cases :
@@ -89,7 +90,7 @@ class BinaryTree:
         Returns None if LCA not found
         """
 
-        return Node(5, None)
+        return None
 
         #node1 == None || node2 == None
 
