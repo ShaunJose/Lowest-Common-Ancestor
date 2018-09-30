@@ -1,12 +1,15 @@
-# author : Shaun Jose
+# author: Shaun Jose
 # Date created: 22/09/2018
 
 # Lowest Common Ancestor class
 # Finds the LCA of two nodes in a Binary Tree
 
+#NOTE: main part of LCA method taken from Sylvain Leroux's answer:
+#https://stackoverflow.com/questions/11906132/python-lowest-common-ancestor
+
 # Node class
 # Attributes: left, right, data, parent
-# NOTE: data can be int, float, double, or char type
+# NOTE: data can be int, float, double, or char type (using int in tests)
 
 class Node:
 
@@ -18,22 +21,21 @@ class Node:
 
 # BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
 # Methods: add(self, data), _add(self, data, node, parent), get(self, data), _get(self, data, node), (static) LCA(node_1, node_2)
-# Attributes: _root, size
+# Attributes: _root, _size
 
 class BinaryTree:
 
     # Initializes an Empty Binary Tree
     def __init__(self):
-        self._root = None #'_' implies _root should not be accesses from outside
+        self._root = None
         self._size = 0
 
 
     # NOTE: adds nodes in binary search tree order i.e. nodes with lower data values to the left and node with larger data values to the right
-    # NOTE: Also keeps record of parent node
     def add(self, data):
         """
         Adds a node to the Binary Tree
-        Doesn't add duplicate nodes (Nodes with duplicate values)
+        Doesn't add duplicate nodes (Nodes with duplicate data values)
         """
         self._root = self._add(data, self._root, None)
 
@@ -41,15 +43,15 @@ class BinaryTree:
     def _add(self, data, node, parent):
 
         #Found a place to store the node
-        if(node == None):
+        if node == None:
             node = Node(data, parent)
             self._size += 1
             return node
 
         #Traversing the tree to find an empty place for the new node
-        if(data < node.data):
+        if data < node.data:
             node.left = self._add(data, node.left, node)
-        elif(data > node.data):
+        elif data > node.data:
             node.right = self._add(data, node.right, node)
         #equals to case -> don't add duplicate node (i.e. do nothing)
 
@@ -67,22 +69,23 @@ class BinaryTree:
     # Recursive get method
     def _get(self, data, node):
 
-        if(node == None): #node doesn't exist
+        if node == None: #node doesn't exist
             return None
 
-        if(data == node.data):
+        if data == node.data:
             return node
 
-        if(data < node.data):
+        if data < node.data:
             return self._get(data, node.left)
         else: #Node can only be greater than now as equal data values not      allowed
             return self._get(data, node.right)
 
 
-    # NOTE: LCA is not found in two cases :
+    # NOTE: LCA is not found in two cases:
     # 1. when either node is None.
     # 2. when node1 and node2 are in different trees
     # None value returned when LCA not found
+    # NOTE: static method because node_1 and node_2 can be from diff trees
     @staticmethod
     def LCA(node_1, node_2):
         """
@@ -90,12 +93,27 @@ class BinaryTree:
         Returns None if LCA not found
         """
 
-        return None
+        # Valid nodes check
+        if node_1 == None or node_2 == None:
+            return None
 
-        #node1 == None || node2 == None
+        # Same node check
+        if node_1 == node_2:
+            return node_1
 
-        #node1 == node2
+        # NOTE: idea taken from Sylvain Leroux: (source at beginning of file)
+        # Searching for LCA of valid different nodes, node_1 and node_2
+        ancestors_1 = set()
 
-        #normal case
+        #adding node_1 and all ancestors of node_1 in set ancestors_1
+        while node_1 != None:
+          ancestors_1.add(node_1)
+          node_1 = node_1.parent
 
-        #return None when not found
+        #checking if node_2 or any of it's ancestors lie in the same set
+        while node_2 != None:
+          if node_2 in ancestors_1:
+            return node_2
+          node_2 = node_2.parent
+
+        return None # reaches here only if node_1 and node_2 are in diff trees
