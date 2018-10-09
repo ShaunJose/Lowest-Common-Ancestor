@@ -1,119 +1,85 @@
 # author: Shaun Jose
-# Date created: 22/09/2018
+# Date created: 22/09/2018 (modified version of Binary Graph LCA)
 
 # Lowest Common Ancestor class
-# Finds the LCA of two nodes in a Binary Tree
+# Finds the LCA of two nodes in a Graph
 
-#NOTE: main part of LCA method taken from Sylvain Leroux's answer:
-#https://stackoverflow.com/questions/11906132/python-lowest-common-ancestor
+# Graph respresentation idea source:
+# https://www.python.org/doc/essays/graphs/
 
-# Node class
-# Attributes: left, right, data, parent
-# NOTE: data can be int, float, double, or char type (using int in tests)
+# DirectedAcyclicGraph class - Graph respresented as dictionary with data values, not node objects!
+# Methods: add(self, val), addEdge(self, src, dst), hasDirectPathTo(self, src, dst), _isCyclic(self), LCA(self, val_1, val_2)
+# Attributes: _graph: is a dicitonary of data values an arrays with connections
 
-class Node:
+class DirectedAcyclicGraph:
 
-    def __init__(self, data, parent):
-        self.left = None
-        self.right = None
-        self.data = data
-        self.parent = parent
-
-# BinaryTree class (ordered Binary Tree i.e. Binary Search Tree)
-# Methods: add(self, data), _add(self, data, node, parent), get(self, data), _get(self, data, node), (static) LCA(node_1, node_2)
-# Attributes: _root, _size
-
-class BinaryTree:
-
-    # Initializes an Empty Binary Tree
+    # Initializes an Empty graph
     def __init__(self):
-        self._root = None
-        self._size = 0
+        self._graph = {} # _ implies it shouldn't be accessed from outside
 
 
-    # NOTE: adds nodes in binary search tree order i.e. nodes with lower data values to the left and node with larger data values to the right
-    def add(self, data):
+    # NOTE: adds nodes to a graph. Doesn't accept nodes with vals that already exist
+    def add(self, val):
         """
-        Adds a node to the Binary Tree
+        Adds a node to the Directed Acyclic Graph
         Doesn't add duplicate nodes (Nodes with duplicate data values)
+        Returns True if node was successful added, else False
         """
-        self._root = self._add(data, self._root, None)
 
-    # Recursive inner _add method
-    def _add(self, data, node, parent):
+        # Check if key already exists in _graph.keys()
 
-        #Found a place to store the node
-        if node == None:
-            node = Node(data, parent)
-            self._size += 1
-            return node
-
-        #Traversing the tree to find an empty place for the new node
-        if data < node.data:
-            node.left = self._add(data, node.left, node)
-        elif data > node.data:
-            node.right = self._add(data, node.right, node)
-        #equals to case -> don't add duplicate node (i.e. do nothing)
-
-        return node
+        # Add if it doesn't
 
 
-    # Returns node with data, if found, else None
-    def get(self, data):
+    # Connects node src to node dst (one way route)
+    # Checks if graph is cyclic before connecting nodes?
+    def addEdge(self, src, dst):
         """
-        Accepts a value and returns the node with that corresponding value
-        Returns None if node not found
+        Creates a connection from node src to node dst.
+        Does not create duplicate connections if node src is already directly
+        connected to node dst
+        Does not create a connection which would lead to a cyclic graph
+        Returns true if connection succesfully created, False otherwise
         """
-        return self._get(data, self._root)
 
-    # Recursive get method
-    def _get(self, data, node):
+        # Check if src and dst both exist in graph
 
-        if node == None: #node doesn't exist
-            return None
+        # Check if DST key doesn’t already exist in array of src key (i.e. _graph[src])
 
-        if data == node.data:
-            return node
+        # Check if this connection will make graph cyclic
 
-        if data < node.data:
-            return self._get(data, node.left)
-        else: #Node can only be greater than now as equal data values not      allowed
-            return self._get(data, node.right)
+        # Add dst to _graph[src] if reached here
 
 
-    # NOTE: LCA is not found in two cases:
-    # 1. when either node is None.
-    # 2. when node1 and node2 are in different trees
-    # None value returned when LCA not found
-    # NOTE: static method because node_1 and node_2 can be from diff trees
-    @staticmethod
-    def LCA(node_1, node_2):
+    # Checks if src is directly connected to destination
+    # NOTE: This methods exists only to check if add and addEdge work
+    def hasDirectPathTo(self, src, dst):
+        """
+        Returns true if src exists in graph, and if src is directly connected to dst, else False.
+        """
+        # Check if src exists in graph
+
+        # Return dst in _graph[src]
+
+
+    # Checks if graph is cyclic
+    def _isCyclic(self):
+        #TODO: find a way
+
+
+    # Find the LCA of two nodes of a graph
+    def LCA(self, val_1, val_2):
         """
         Finds the lowest common ancestor of two nodes, (inclusive of the nodes themselves), and returns the node
         Returns None if LCA not found
         """
 
-        # Valid nodes check
-        if node_1 == None or node_2 == None:
-            return None
+        # Existing nodes check
 
         # Same node check
-        if node_1 == node_2:
-            return node_1
 
-        # NOTE: idea taken from Sylvain Leroux: (source at beginning of file)
-        # Searching for LCA of valid different nodes, node_1 and node_2
-        ancestors_1 = set()
+        # Same parent check
 
-        #adding node_1 and all ancestors of node_1 in set ancestors_1
-        while node_1 != None:
-          ancestors_1.add(node_1)
-          node_1 = node_1.parent
+        # Normal check
 
-        #checking if node_2 or any of it's ancestors lie in the same set
-        while node_2 != None:
-          if node_2 in ancestors_1:
-            return node_2
-          node_2 = node_2.parent
-
-        return None # reaches here only if node_1 and node_2 are in diff trees
+        return None # nodes don't have a common ancestor

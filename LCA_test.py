@@ -9,15 +9,15 @@ from Lowest_Common_Ancestor import BinaryTree, Node
 def test_all_basic_class_methods():
     #Creating empty graph - NOTE: init method creates empty graph
 
-    #empty graph get test case - NOTE: way to retrieve nodes from graph
-
     #populating graph - NOTE: add() method to add nodes to graph
 
     #covering code for duplicate node value - NOTE: graph wont take non-unique values
 
-    #trying get for all node values
+    # add Edges (connect nodes of the graph)
 
-    #trying get for values that don't exist
+    #try to create a cyclic graph and test outcome
+
+    #check has directPathTo for adequate cases
 
 
 # -------- LCA Tests -------- #
@@ -44,10 +44,6 @@ def test_populated_graph():
     #Test node1 higher than node2
     #Test node2 higher than node1
     #Test node1 and node2 on the same level
-
-
-# Test case where graph is cyclic - NOTE: method to check if graph is cyclic? or check if new node getting added makes graph cyclic and add/don't add accordingly.
-def test_cyclic_graph():
 
 
 # Test case where the two nodes are in different connected components (hence LCA should be None)
