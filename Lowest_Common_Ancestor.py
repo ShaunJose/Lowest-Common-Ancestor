@@ -4,8 +4,11 @@
 # Lowest Common Ancestor class
 # Finds the LCA of two nodes in a Graph
 
-# Graph respresentation idea source:
-# https://www.python.org/doc/essays/graphs/
+# Sources:
+# 1. Graph respresentation idea source:
+#    https://www.python.org/doc/essays/graphs/
+# 2. _isCyclic implementation:
+#    Gareth Rees's efficient implementation answer on https://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
 
 # DirectedAcyclicGraph class - Graph respresented as dictionary with data values, not node objects!
 # Methods: add(self, val), addEdge(self, src, dst), hasDirectPathTo(self, src, dst), _isCyclic(self), LCA(self, val_1, val_2)
@@ -27,11 +30,11 @@ class DirectedAcyclicGraph:
         """
 
         # Check if key already exists in _graph.keys()
-        if key in self._graph.keys():
+        if val in self._graph.keys():
             return False
 
         # Add if it doesn't
-        self._graph[val] == [] #Node not connected to anything
+        self._graph[val] = [] #Node not connected to anything
         return True
 
 
@@ -48,11 +51,11 @@ class DirectedAcyclicGraph:
 
         # Check if src and dst both exist in graph
         keys = self._graph.keys()
-        is src not in keys || dst not in keys
+        if src not in keys or dst not in keys:
             return False
 
         # Check if SRC already connected to DST
-        if dst in self._graph[src]
+        if dst in self._graph[src]:
             return False
 
         # Add dst to _graph[src] if reached here
@@ -77,16 +80,30 @@ class DirectedAcyclicGraph:
             return False
 
         #Return true if src directly connected to dst
-        if dst in self._graph[src]
+        if dst in self._graph[src]:
             return True
 
         #dst not directly connected to src or doesn't exists in graph
         return False
 
 
-    # Checks if graph is cyclic
+    # Checks if graph is cyclic and return True if cyclic, else False
+    # NOTE: Source mentioned above
     def _isCyclic(self):
-        #TODO: find a way
+        path = set()
+        visited = set()
+
+        def visit(vertex):
+            if vertex in visited:
+                return False
+            visited.add(vertex)
+            path.add(vertex)
+            for neighbour in self._graph.get(vertex, ()):
+                if neighbour in path or visit(neighbour):
+                    return True
+            return False
+
+        return any(visit(v) for v in self._graph) #returns True if True for atleast one v in self._graph
 
 
     # Find the LCA of two nodes of a graph
