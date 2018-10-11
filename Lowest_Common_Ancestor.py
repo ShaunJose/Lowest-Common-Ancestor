@@ -27,8 +27,12 @@ class DirectedAcyclicGraph:
         """
 
         # Check if key already exists in _graph.keys()
+        if key in self._graph.keys():
+            return False
 
         # Add if it doesn't
+        self._graph[val] == [] #Node not connected to anything
+        return True
 
 
     # Connects node src to node dst (one way route)
@@ -43,12 +47,23 @@ class DirectedAcyclicGraph:
         """
 
         # Check if src and dst both exist in graph
+        keys = self._graph.keys()
+        is src not in keys || dst not in keys
+            return False
 
-        # Check if DST key doesn’t already exist in array of src key (i.e. _graph[src])
-
-        # Check if this connection will make graph cyclic
+        # Check if SRC already connected to DST
+        if dst in self._graph[src]
+            return False
 
         # Add dst to _graph[src] if reached here
+        self._graph[src].append(dst)
+
+        # Remove connection if it makes graph cyclic
+        if self._isCyclic():
+            self._graph[src].remove(dst)
+            return False
+
+        return True #all 'troublesome' conditions passed if reached here
 
 
     # Checks if src is directly connected to destination
@@ -58,8 +73,15 @@ class DirectedAcyclicGraph:
         Returns true if src exists in graph, and if src is directly connected to dst, else False.
         """
         # Check if src exists in graph
+        if src not in self._graph:
+            return False
 
-        # Return dst in _graph[src]
+        #Return true if src directly connected to dst
+        if dst in self._graph[src]
+            return True
+
+        #dst not directly connected to src or doesn't exists in graph
+        return False
 
 
     # Checks if graph is cyclic
