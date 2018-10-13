@@ -58,6 +58,78 @@ def test_all_basic_class_methods():
     assert dag.hasDirectPathTo('Z', 'F') == False  #'Z' not in graph
     assert dag.hasDirectPathTo(100, 'M') == False #100 and 'M' not in graph
 
+
+#Testing if depths are right while creating graphs in different ways
+def test_depth_maintenance():
+    #1: Create and populate graph normally and test depth.
+    dag_normal = DirectedAcyclicGraph()
+    dag_normal.add(1)
+    dag_normal.add(2)
+    dag_normal.add(3)
+    dag_normal.add(4)
+    dag_normal.add(5)
+    dag_normal.add(6)
+    dag_normal.add(7)        # Graph respresentation
+    dag_normal.addEdge(1, 2) #      3
+    dag_normal.addEdge(1, 3) #      ^   (Root = 1)
+    dag_normal.addEdge(1, 4) #      |
+    dag_normal.addEdge(2, 5) # 4 <- 1 -> 2 -> 5 -> 6 -> 7
+    dag_normal.addEdge(5, 6)
+    dag_normal.addEdge(6, 7)
+
+    #Test depth in normal case
+    assert dag_normal.getDepth(1) == 1
+    assert dag_normal.getDepth(4) == 2
+    assert dag_normal.getDepth(3) == 2
+    assert dag_normal.getDepth(2) == 2
+    assert dag_normal.getDepth(5) == 3
+    assert dag_normal.getDepth(6) == 4
+    assert dag_normal.getDepth(7) == 5
+
+    #2: Create and populate a graph, but connect in reverse order (root keeps changing)
+    dag_reverse = DirectedAcyclicGraph()
+    dag_reverse.add(8)
+    dag_reverse.add(7)
+    dag_reverse.add(6)
+    dag_reverse.add(5)
+    dag_reverse.add(4)
+    dag_reverse.add(3)
+    dag_reverse.add(10)
+    dag_reverse.add(1)
+    dag_reverse.addEdge(6, 10)
+    dag_reverse.addEdge(5, 6) # Graph respresentation
+    dag_reverse.addEdge(5, 7) #             7
+    dag_reverse.addEdge(5, 8)  #            ^    (Root = 1)
+    dag_reverse.addEdge(3, 5)  #            |
+    dag_reverse.addEdge(3, 4)  #       8 <- 5 -> 6 -> 10
+    dag_reverse.addEdge(1, 3)  #            ^
+                               #            |
+                               #       1 -> 3 -> 4
+
+    #test depths of graph connected in reverse order
+    assert dag_reverse.getDepth(1) == 1
+    assert dag_reverse.getDepth(10) == 5
+    assert dag_reverse.getDepth(3) == 2
+    assert dag_reverse.getDepth(4) == 3
+    assert dag_reverse.getDepth(5) == 3
+    assert dag_reverse.getDepth(6) == 4
+    assert dag_reverse.getDepth(7) == 4
+    assert dag_reverse.getDepth(8) == 4
+
+    #3: Create and populate graph, and then connect two components
+    dag_cc = DirectedAcyclicGraph()
+    dag_cc.add(1)
+    dag_cc.add(2)
+    dag_cc.add(3)
+    dag_cc.add(4)
+    dag_cc.add(5)
+    dag_cc.add(6)
+    #1st connected component
+    dag_cc.addEdge(1, 2)
+    dag_cc.addEdge(3, 1)
+    dag_cc.addEdge(4, 2)
+
+
 # -------- LCA Tests -------- #
 
 #test_empty_graph with None nodes
@@ -249,7 +321,7 @@ def test_diff_connected_comps():
     dag.add(11)
     dag.add(12)
     dag.add(13)
-    daf.add(14)
+    dag.add(14)
     dag.add(15)
     dag.add(16)
     dag.add(17)
@@ -304,7 +376,7 @@ def test_diff_connected_comps():
     dag.LCA(14, 13) == 13
     dag.LCA(17, 14) == 14
     dag.LCA(7, 8) == 1
-    dga.LCA(4, 8) == 1
+    dag.LCA(4, 8) == 1
     dag.LCA(10, 3) == 1
     dag.LCA(3, 9) == 3
     dag.LCA(5, 7) == 5

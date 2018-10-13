@@ -11,14 +11,16 @@
 #    Gareth Rees's efficient implementation answer on https://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
 
 # DirectedAcyclicGraph class - Graph respresented as dictionary with data values, not node objects!
-# Methods: add(self, val), addEdge(self, src, dst), hasDirectPathTo(self, src, dst), _isCyclic(self), LCA(self, val_1, val_2)
+# Methods: add(self, val), addEdge(self, src, dst), _incrementNodeDepths(self, node, inc), getDepth(self, node), hasDirectPathTo(self, src, dst), _isCyclic(self), LCA(self, val_1, val_2)
 # Attributes: _graph: is a dicitonary of data values an arrays with connections
+#             _depth{}: dicitonary with key as node_val and val as node_depth
 
 class DirectedAcyclicGraph:
 
     # Initializes an Empty graph
     def __init__(self):
         self._graph = {} # _ implies it shouldn't be accessed from outside
+        self._depth = {}
 
 
     # NOTE: adds nodes to a graph. Doesn't accept nodes with vals that already exist
@@ -35,6 +37,7 @@ class DirectedAcyclicGraph:
 
         # Add if it doesn't
         self._graph[val] = [] #Node not connected to anything
+        self._depth[val] = 1 #Depth of new node is always 1
         return True
 
 
@@ -66,7 +69,32 @@ class DirectedAcyclicGraph:
             self._graph[src].remove(dst)
             return False
 
+        #update depth of destination node, and depth of all it's children by depth of src node
+        self._incrementNodeDepths(dst, self._depth[src])
+
         return True #all 'troublesome' conditions passed if reached here
+
+
+    #increments the depth of node and all it's children by the value inc
+    def _incrementNodeDepths(self, node, inc):
+        self._depth[node] += inc
+        parent = node
+        queue = [node]
+        while(queue != []):
+            parent = queue.pop(0)
+            children = self._graph[parent]
+            for child in children:
+                self._depth[child] += inc
+                queue.append(child)
+
+
+    #Returns the depth of a node, if exists, else None
+    def getDepth(self, node):
+        #Check if node is in graph
+        if node not in self._graph.keys():
+            return None
+
+        return self._depth[node]
 
 
     # Checks if src is directly connected to destination
