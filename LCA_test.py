@@ -386,4 +386,4 @@ def test_diff_connected_comps():
 
 # Test case where two nodes have more than one possible LCA. In this case, we'll accept either candidate of an LCA as a correct response
 #def test_multiple_LCA():
-#NOTE: Multiple LCA not applicable in this case because any node in an acyclic graph can only have one parent at a time! Hence, the idea of possibly having multiple LCAs for two nodes is incorrect in such a graph
+#NOTE: Multiple LCA not applicable in this case because any 2 nodes in an acyclic graph can't have multiple LCAs.

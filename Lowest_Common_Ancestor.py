@@ -75,7 +75,7 @@ class DirectedAcyclicGraph:
         return True #all 'troublesome' conditions passed if reached here
 
 
-    #increments the depth of node and all it's children by the value inc
+    #increments the depth of node and all it's children by the value inc, if the depth is greater than the previous depth.
     def _incrementNodeDepths(self, node, inc):
         self._depth[node] += inc
         parent = node
@@ -84,8 +84,10 @@ class DirectedAcyclicGraph:
             parent = queue.pop(0)
             children = self._graph[parent]
             for child in children:
-                self._depth[child] += inc
-                queue.append(child)
+                newDepth = self._depth[child] + inc
+                if self._depth[child] < newDepth:
+                    self._depth[child] += inc
+                    queue.append(child)
 
 
     #Returns the depth of a node, if exists, else None
