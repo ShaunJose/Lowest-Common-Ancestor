@@ -113,7 +113,7 @@ class DirectedAcyclicGraph:
         Returns None if LCA not found
         """
 
-        # Empty graph check? NOTE: Not needed if next check is implemented
+        # Empty graph check? NOTE: Not needed if next check is exists
 
         # Existing nodes check
 
