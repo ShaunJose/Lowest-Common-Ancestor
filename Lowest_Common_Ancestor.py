@@ -8,12 +8,14 @@
 # 1. Graph respresentation idea source:
 #    https://www.python.org/doc/essays/graphs/
 # 2. _isCyclic implementation:
-#    Gareth Rees's efficient implementation answer on https://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
+#    Gareth Rees's Recursion Limit implementation answer on https://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
+# 3. BeyondRubicon's answer on finding common elements of two lists for finding common elements of two lists, on:
+#https://stackoverflow.com/questions/2864842/common-elements-comparison-between-2-lists
 
 # DirectedAcyclicGraph class - Graph respresented as dictionary with data values, not node objects!
 # Methods: add(self, val), addEdge(self, src, dst), _incrementNodeDepths(self, node, inc), getDepth(self, node), hasDirectPathTo(self, src, dst), _isCyclic(self), LCA(self, val_1, val_2)
-# Attributes: _graph: is a dicitonary of data values an arrays with connections
-#             _depth{}: dicitonary with key as node_val and val as node_depth
+# Attributes: _graph: is a dictionary of data values an arrays with connections
+#             _depth: a dictionary with key as node_val and val as node_depth
 
 class DirectedAcyclicGraph:
 
@@ -75,25 +77,30 @@ class DirectedAcyclicGraph:
         return True #all 'troublesome' conditions passed if reached here
 
 
-    #increments the depth of node and all it's children by the value inc, if the depth is greater than the previous depth.
+    #Increments the depth of node and all it's children by the value inc, if the depth is greater than the previous depth
+    #NOTE: in the event that a node has two depths (because of the existence of two or more roots of a connected components), the greater depth is chosen for the node
     def _incrementNodeDepths(self, node, inc):
-        self._depth[node] += inc
+        flag = False
+        if self._depth[node] < inc + 1: #record greatest depth
+            del self._depth[node]
+            self._depth[node] = inc + 1
+            flag = True
         parent = node
         queue = [node]
-        while(queue != []):
+        while queue != []:
             parent = queue.pop(0)
             children = self._graph[parent]
             for child in children:
-                newDepth = self._depth[child] + inc
-                if self._depth[child] < newDepth:
-                    self._depth[child] += inc
+                if flag:
+                    del self._depth[child]
+                    self._depth[child] = self._depth[parent] + 1
                     queue.append(child)
 
 
     #Returns the depth of a node, if exists, else None
     def getDepth(self, node):
         #Check if node is in graph
-        if node not in self._graph.keys():
+        if node == None or node not in self._graph.keys():
             return None
 
         return self._depth[node]
@@ -120,20 +127,39 @@ class DirectedAcyclicGraph:
     # Checks if graph is cyclic and return True if cyclic, else False
     # NOTE: Source mentioned above
     def _isCyclic(self):
-        path = set()
         visited = set()
-
-        def visit(vertex):
-            if vertex in visited:
-                return False
-            visited.add(vertex)
-            path.add(vertex)
-            for neighbour in self._graph.get(vertex, ()):
-                if neighbour in path or visit(neighbour):
+        path = [object()]
+        path_set = set(path)
+        stack = [iter(self._graph)]
+        while stack:
+            for v in stack[-1]:
+                if v in path_set:
                     return True
-            return False
+                elif v not in visited:
+                    visited.add(v)
+                    path.append(v)
+                    path_set.add(v)
+                    stack.append(iter(self._graph.get(v, ())))
+                    break
+            else:
+                path_set.remove(path.pop())
+                stack.pop()
+        return False #returns True if True for atleast one v in self._graph
 
-        return any(visit(v) for v in self._graph) #returns True if True for atleast one v in self._graph
+
+    def _getParentsOf(self, val):#TODO: add queue here
+        parents = [val]
+        queue = [val]
+
+        #get all ancestors
+        while queue != []:
+            curr_node = queue.pop(0) #TODO: recall parentsOf from here with node as val and pass in new queue
+            for node in self._graph.keys():
+                if curr_node in self._graph[node] and node not in parents:
+                    parents.append(node)
+                    queue.append(node)
+
+        return parents
 
 
     # Find the LCA of two nodes of a graph
@@ -143,14 +169,35 @@ class DirectedAcyclicGraph:
         Returns None if LCA not found
         """
 
-        # Empty graph check? NOTE: Not needed if next check is exists
+        # Empty graph check
+        if len(self._graph) == 0: # Not needed if next check is exists
+            return None
 
         # Existing nodes check
+        nodes = self._graph.keys()
+        if val_1 not in nodes or val_2 not in nodes:
+            return None
 
         # Same node check
+        if val_1 == val_2:
+            return val_1
 
-        # Same parent check
+        parents_1 = self._getParentsOf(val_1)
+        parents_2 = self._getParentsOf(val_2)
 
-        # Normal check
+        #NOTE: line of code below, sourced in beginning of file
+        common_ancestors = set(parents_1) - (set(parents_1) - set(parents_2))
+        common_ancestors = list(common_ancestors)
 
-        return None # nodes don't have a common ancestor
+        if common_ancestors == []:
+            return None # nodes don't have a common ancestor
+
+        deepest = common_ancestors.pop(0)
+
+        #find common ancestor with greates depth
+        while common_ancestors != []:
+            nextAnc = common_ancestors.pop(0)
+            if self._depth[nextAnc] > self._depth[deepest]:
+                deepest = nextAnc
+
+        return deepest

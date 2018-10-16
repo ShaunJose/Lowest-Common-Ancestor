@@ -60,8 +60,9 @@ def test_all_basic_class_methods():
 
 
 #Testing if depths are right while creating graphs in different ways
+#NOTE: Has 5 Kinds of tests!
 def test_depth_maintenance():
-    #1: Create and populate graph normally and test depth.
+    #1: Create and populate graph "normally" and test depth.
     dag_normal = DirectedAcyclicGraph()
     dag_normal.add(1)
     dag_normal.add(2)
@@ -125,9 +126,55 @@ def test_depth_maintenance():
     dag_cc.add(5)
     dag_cc.add(6)
     #1st connected component
-    dag_cc.addEdge(1, 2)
-    dag_cc.addEdge(3, 1)
-    dag_cc.addEdge(4, 2)
+    dag_cc.addEdge(1, 2) #          4
+    dag_cc.addEdge(3, 1) #          ^   (Root = 3)
+    dag_cc.addEdge(1, 4) #          |
+                         #     3 -> 1 -> 2
+    #2nd connected component
+    dag_cc.addEdge(5, 6)    # 5 -> 6
+
+    #Joining both components
+    dag_cc.addEdge(6, 1)
+
+    #NOTE: A node always chooses a greater depth!
+
+    assert dag_cc.getDepth(1) == 3
+    assert dag_cc.getDepth(2) == 4
+    assert dag_cc.getDepth(3) == 1
+    assert dag_cc.getDepth(4) == 4
+    assert dag_cc.getDepth(5) == 1
+    assert dag_cc.getDepth(6) == 2
+
+
+    #4: Create ad populate graph with multiple parents
+    dag = DirectedAcyclicGraph()
+    dag.add(1)
+    dag.add(2)
+    dag.add(3)
+    dag.add(4)
+    dag.add(5)
+    dag.add(6)
+
+    dag.addEdge(1, 2) # Graph representation
+    dag.addEdge(1, 3) #  5     6     5  6 NOTE: just for represntation!
+    dag.addEdge(3, 4) #  ^    ^      ^  ^      Duplicate ndoes dont exist!
+    dag.addEdge(4, 5) #  |   /        \ |
+    dag.addEdge(4, 6) #  | /           \|
+    dag.addEdge(2, 5) #  2 <- 1 -> 3 -> 4
+    dag.addEdge(2, 6) # (ROOT = 1)
+
+    #test nodes with both having more than one parent
+    assert dag.getDepth(1) == 1
+    assert dag.getDepth(2) == 2
+    assert dag.getDepth(3) == 2
+    assert dag.getDepth(4) == 3
+    assert dag.getDepth(5) == 4
+    assert dag.getDepth(6) == 4
+
+
+    #5: Test getDepth with nodes that don't exist
+    assert dag.getDepth(None) == None
+    assert dag.getDepth(10) == None
 
 
 # -------- LCA Tests -------- #
@@ -167,6 +214,9 @@ def test_none_nodes():
     #Test nodes which don't exist
     assert dag.LCA('A', 2) == None
     assert dag.LCA(3, 5) == None
+
+    #same val nodes which don't exist!
+    assert dag.LCA(7, 7) == None
 
 
 # LCA Test with node1 == node2 (testing same node)
@@ -383,6 +433,34 @@ def test_diff_connected_comps():
     dag.LCA(2, 8) == 2
     dag.LCA(9, 7) == 6
 
+
+#Test LCA on nodes with multiple parents
+def testMultipleParentNodes():
+    #4: Create ad populate graph with multiple parents
+    dag = DirectedAcyclicGraph()
+    dag.add(1)
+    dag.add(2)
+    dag.add(3)
+    dag.add(4)
+    dag.add(5)
+    dag.add(6)
+
+    dag.addEdge(1, 2) # Graph representation
+    dag.addEdge(1, 3) #  5     6     5  6 NOTE: just for represntation!
+    dag.addEdge(3, 4) #  ^    ^      ^  ^      Duplicate ndoes dont exist!
+    dag.addEdge(4, 5) #  |   /        \ |
+    dag.addEdge(4, 6) #  | /           \|
+    dag.addEdge(2, 5) #  2 <- 1 -> 3 -> 4
+    dag.addEdge(2, 6) # (Root = 1)
+
+    #test nodes with both having more than one parent
+    assert dag.LCA(5, 6) == 4
+    #test node_1 with multiple parents
+    assert dag.LCA(6, 3) == 3
+    assert dag.LCA(6, 2) == 2
+    #test node_2 with multiple parents
+    assert dag.LCA(2, 5) == 2
+    assert dag.LCA(3, 6) == 3
 
 # Test case where two nodes have more than one possible LCA. In this case, we'll accept either candidate of an LCA as a correct response
 #def test_multiple_LCA():
