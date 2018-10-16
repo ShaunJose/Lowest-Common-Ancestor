@@ -13,7 +13,7 @@
 #https://stackoverflow.com/questions/2864842/common-elements-comparison-between-2-lists
 
 # DirectedAcyclicGraph class - Graph respresented as dictionary with data values, not node objects!
-# Methods: add(self, val), addEdge(self, src, dst), _incrementNodeDepths(self, node, inc), getDepth(self, node), hasDirectPathTo(self, src, dst), _isCyclic(self), LCA(self, val_1, val_2)
+# Methods: add(self, val), addEdge(self, src, dst), _incrementNodeDepths(self, node, inc), getDepth(self, node), hasDirectPathTo(self, src, dst), _isCyclic(self), _getParentsOf(self, val), LCA(self, val_1, val_2)
 # Attributes: _graph: is a dictionary of data values an arrays with connections
 #             _depth: a dictionary with key as node_val and val as node_depth
 
@@ -147,6 +147,7 @@ class DirectedAcyclicGraph:
         return False #returns True if True for atleast one v in self._graph
 
 
+    #Returns a list of all the parents of the node val (including itself), in the graph (self). If node with val has no parents, a list with itself is returned
     def _getParentsOf(self, val):#TODO: add queue here
         parents = [val]
         queue = [val]

@@ -95,21 +95,21 @@ def test_depth_maintenance():
     dag_reverse.add(5)
     dag_reverse.add(4)
     dag_reverse.add(3)
-    dag_reverse.add(10)
+    dag_reverse.add(2)
     dag_reverse.add(1)
-    dag_reverse.addEdge(6, 10)
+    dag_reverse.addEdge(6, 2)
     dag_reverse.addEdge(5, 6) # Graph respresentation
     dag_reverse.addEdge(5, 7) #             7
     dag_reverse.addEdge(5, 8)  #            ^    (Root = 1)
     dag_reverse.addEdge(3, 5)  #            |
-    dag_reverse.addEdge(3, 4)  #       8 <- 5 -> 6 -> 10
+    dag_reverse.addEdge(3, 4)  #       8 <- 5 -> 6 -> 2
     dag_reverse.addEdge(1, 3)  #            ^
                                #            |
                                #       1 -> 3 -> 4
 
     #test depths of graph connected in reverse order
     assert dag_reverse.getDepth(1) == 1
-    assert dag_reverse.getDepth(10) == 5
+    assert dag_reverse.getDepth(2) == 5
     assert dag_reverse.getDepth(3) == 2
     assert dag_reverse.getDepth(4) == 3
     assert dag_reverse.getDepth(5) == 3
@@ -177,7 +177,10 @@ def test_depth_maintenance():
     assert dag.getDepth(10) == None
 
 
-# -------- LCA Tests -------- #
+
+
+# ----------------------------- LCA Tests ----------------------------- #
+
 
 #test_empty_graph with None nodes
 def test_empty_graph():
@@ -279,6 +282,7 @@ def test_same_parent():
     assert dag.LCA(3, 8) == 2
     assert dag.LCA(1, 8) == 2
     assert dag.LCA(1, 3) == 2
+
 
 # Test LCA for 2 nodes in a sufficiently populated graph containing ONLY ONE connected component
 def test_populated_graph():
@@ -435,7 +439,7 @@ def test_diff_connected_comps():
 
 
 #Test LCA on nodes with multiple parents
-def testMultipleParentNodes():
+def test_multiple_parent_nodes():
     #4: Create ad populate graph with multiple parents
     dag = DirectedAcyclicGraph()
     dag.add(1)
@@ -462,6 +466,144 @@ def testMultipleParentNodes():
     assert dag.LCA(2, 5) == 2
     assert dag.LCA(3, 6) == 3
 
+
+#Test nodes which are connected in reverse
+#Tested because adding in reverse could affect depths of nodes
+def test_reverse_constructed_graph():
+    #Create and populate graph
+    dag = DirectedAcyclicGraph()
+    dag.add(1)
+    dag.add(2)
+    dag.add(3)
+    dag.add(4)
+    dag.add(5)
+    dag.add(6)
+
+    #Construct graph in reverse
+    dag.addEdge(5, 6) # Graph representation
+    dag.addEdge(4, 6) #    4 -> 6<- 5  (5 = child of 3)
+    dag.addEdge(3, 4) #     ^      ^
+    dag.addEdge(3, 5) #      \   /
+    dag.addEdge(1, 3) #        3 <- 1 -> 2
+    dag.addEdge(1, 2) #  Root = 1
+
+    #Test LCA
+    assert dag.LCA(3, 4) == 3
+    assert dag.LCA(4, 5) == 3
+    assert dag.LCA(1, 3) == 1
+    assert dag.LCA(3, 2) == 1
+    assert dag.LCA(6, 6) == 6
+    assert dag.LCA(6, 3) == 3
+    assert dag.LCA(6, 5) == 5
+    assert dag.LCA(6, 4) == 4
+
+
+#Test LCA of connected components before and after joining them
+def test_cc_LCA():
+    dag_cc = DirectedAcyclicGraph()
+    dag_cc.add(1)
+    dag_cc.add(2)
+    dag_cc.add(3)
+    dag_cc.add(4)
+    dag_cc.add(5)
+    dag_cc.add(6)
+    dag_cc.add(7)
+    #1st connected component
+    dag_cc.addEdge(1, 2) #          4
+    dag_cc.addEdge(3, 1) #          ^   (Root = 3)
+    dag_cc.addEdge(1, 4) #          |
+                         #     3 -> 1 -> 2
+    #2nd connected component
+    dag_cc.addEdge(5, 6)    # 5 -> 6 -> 7 (Root = 5)
+    dag_cc.addEdge(6, 7)
+
+    #Testing 1st component briefly
+    assert dag_cc.LCA(1, 2) == 1
+    assert dag_cc.LCA(4, 2) == 1
+    assert dag_cc.LCA(3, 1) == 3
+
+    #Testing 2nd component briefly
+    assert dag_cc.LCA(5, 6) == 5
+    assert dag_cc.LCA(6, 6) == 6
+    assert dag_cc.LCA(7, 6) == 6
+
+    #Joining both components
+    dag_cc.addEdge(6, 1)
+
+    #NOTE: note that depths of nodes 1 and 7, will be 3 (and not 2) since nodes always chooses the greater depth out of 'candidate depths'
+
+    #Test LCA of joined components
+    assert dag_cc.LCA(7, 1) == 6 #NOTE: should choose 6 over 3 because node 6 has a greater depth(=2) than node 3 does(depth = 1)!
+    assert dag_cc.LCA(2, 4) == 1
+    assert dag_cc.LCA(1, 3) == 3
+    assert dag_cc.LCA(1, 6) == 6
+
+
 # Test case where two nodes have more than one possible LCA. In this case, we'll accept either candidate of an LCA as a correct response
-#def test_multiple_LCA():
-#NOTE: Multiple LCA not applicable in this case because any 2 nodes in an acyclic graph can't have multiple LCAs.
+def test_multiple_LCA():
+    #Create and populate graph
+    dag = DirectedAcyclicGraph()
+    dag.add(1)
+    dag.add(2)
+    dag.add(3)
+    dag.add(4)
+    dag.add(5)
+    dag.add(6)
+
+    #Create connections
+    dag.addEdge(5, 2) # Graph represntation
+    dag.addEdge(2, 1) #   4     6 (4 and 6 = children of both, 1 and 3)
+    dag.addEdge(2, 3) #   ^     ^
+    dag.addEdge(1, 4) #   | / \ |
+    dag.addEdge(1, 6) #    1   3
+    dag.addEdge(3, 4) #    ^   ^
+    dag.addEdge(3, 6) #     \ /
+                      #      2 <- 5
+                      # Root = 5
+
+    #NOTE that candidate LCAs for 4 and 6 are both, 1 and 3
+    #We accept either one.
+    result = dag.LCA(4, 6)
+    assert result == 1 or result == 3
+
+
+#Test char and int data types for LCA
+def test_diff_data_types():
+    #Create and populate graph
+    dag = DirectedAcyclicGraph()
+    dag.add(1)
+    dag.add('A')
+    dag.add(3)
+    dag.add(4)
+    dag.add('B')
+    dag.add('Z')
+
+    #NOTE: if 97 is chosen and 'a' is chosen. Values might clash because of unicode value of 'a'. Thus, values which do not clash must be chosen for this test.
+
+    #Add edges
+    dag.addEdge(1, 4)       # graph respresentation
+    dag.addEdge(1, 'A')     #        4
+    dag.addEdge(1, 3)       #        ^
+    dag.addEdge('A', 'Z')   #        |
+    dag.addEdge(3, 'Z')     #   A <- 1 -> 3 -> B
+    dag.addEdge(3, 'B')     #    \       /
+                            #     \    /
+                            #       Z (Z = child of 3 and A)
+                            #
+                            # Root = 1
+
+    #LCA Tests
+    #One node char, One node int
+    assert dag.LCA('A', 3) == 1
+    assert dag.LCA(4, 'Z') == 1
+    assert dag.LCA(3, 'Z') == 3
+    assert dag.LCA('B', 4) == 1
+    #Both nodes int
+    assert dag.LCA(4, 3) == 1
+    assert dag.LCA(4, 4) == 4
+    assert dag.LCA(1, 3) == 1
+    #Both nodes char
+    assert dag.LCA('B', 'Z') == 3
+    assert dag.LCA('A', 'Z') == 'A'
+    assert dag.LCA('B', 'B') == 'B'
+    assert dag.LCA('A', 'B') == 1
